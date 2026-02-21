@@ -1,0 +1,203 @@
+═══════════════════════════════════════════════════════════════════════════════
+                     ESPECIFICACIÓN DE BASE DE DATOS
+                            SIMPLYLOVELYLETTER
+═══════════════════════════════════════════════════════════════════════════════
+
+
+1. TECNOLOGÍA SELECCIONADA
+───────────────────────────────────────────────────────────────────────────────
+
+    • Base de Datos: MongoDB Atlas (Cloud)
+    • Tipo: NoSQL orientada a documentos
+    • Formato de almacenamiento: JSON (BSON)
+    
+Características principales:
+    • Almacenamiento en colecciones en lugar de tablas
+    • Documentos en formato JSON en lugar de filas/columnas
+    • Modelo no relacional con referencias entre documentos
+    • Escalabilidad horizontal
+    • Flexibilidad de esquema adaptativo
+    • Ideal para datos heterogéneos
+
+
+2. MODELO DE DATOS - DESCRIPCIÓN GENERAL
+───────────────────────────────────────────────────────────────────────────────
+
+Estructura jerárquica del sistema:
+
+        ┌─────────────────────────────────────────────────────┐
+        │              PADRE (Usuario adulto)                  │
+        │   - Crea cuenta y administra perfil                 │
+        │   - Gestiona a varios hijos                         │
+        └────────────────────┬────────────────────────────────┘
+                             │
+                    ┌────────┴────────┐
+                    │ (1:N)           │
+                    │                 │
+        ┌───────────▼──────────────┐  (múltiples)
+        │   HIJO (Niño/Niña)       │
+        │  - Perfil dentro de la app│
+        │  - Crea cartas           │
+        └───────────┬──────────────┘
+                    │
+                    │ (1:N)
+                    │
+        ┌───────────▼──────────────┐
+        │   CARTA (Misiva)         │
+        │  - Contenido personalizado
+        │  - Estilo/Plantilla      │
+        │  - Imágenes incluidas    │
+        └──────────────────────────┘
+
+
+3. RELACIONES ENTRE COLECCIONES
+───────────────────────────────────────────────────────────────────────────────
+
+    Padres ────────────────────────> Hijos (Relación 1:N)
+    │ 1 padre puede tener N hijos
+    │
+    └─────────> Cartas (Relación 1:N indirecta)
+               1 hijo puede crear N cartas
+
+
+Detalle de relaciones:
+    • Relación Padres ─ Hijos: Uno a Muchos (referencia: padreId en hijos)
+    • Relación Hijos ─ Cartas: Uno a Muchos (referencia: hijoId en carta)
+
+
+4. ESQUEMA DE COLECCIONES
+───────────────────────────────────────────────────────────────────────────────
+
+┌──────────────────────────────────────────────────────────────────────────────
+│ COLECCIÓN: padres
+├──────────────────────────────────────────────────────────────────────────────
+
+Campo              │ Tipo      │ Descripción
+─────────────────────────────────────────────────────────────────────────────
+_id                │ ObjectId  │ Identificador único (clave primaria)
+nombreCompleto     │ string    │ Nombre completo del padre/madre
+email              │ string    │ Email único para la cuenta
+contraseñaHash     │ string    │ Contraseña hasheada (bcrypt)
+role               │ string    │ Rol de usuario (ej: "padre", "admin")
+createdAt          │ date      │ Fecha de creación de la cuenta
+updatedAt          │ date      │ Última actualización del perfil
+
+Ejemplo JSON:
+{
+    "_id": ObjectId("507f1f77bcf86cd799439011"),
+    "nombreCompleto": "Juan García López",
+    "email": "juan@ejemplo.com",
+    "contraseñaHash": "$2b$10$...",
+    "role": "padre",
+    "createdAt": ISODate("2024-01-15T10:30:00Z"),
+    "updatedAt": ISODate("2024-01-20T14:22:00Z")
+}
+
+
+┌──────────────────────────────────────────────────────────────────────────────
+│ COLECCIÓN: hijos
+├──────────────────────────────────────────────────────────────────────────────
+
+Campo              │ Tipo      │ Descripción
+─────────────────────────────────────────────────────────────────────────────
+_id                │ ObjectId  │ Identificador único (clave primaria)
+padreId            │ ObjectId  │ Referencia al padre (clave foránea)
+nickname           │ string    │ Apodo del niño en la plataforma
+edad               │ int       │ Edad del niño
+avatar             │ string    │ URL de la imagen de perfil o ícono
+createdAt          │ date      │ Fecha de creación del perfil
+
+Ejemplo JSON:
+{
+    "_id": ObjectId("507f1f77bcf86cd799439012"),
+    "padreId": ObjectId("507f1f77bcf86cd799439011"),
+    "nickname": "Carla",
+    "edad": 8,
+    "avatar": "https://cdn.example.com/avatars/carla.png",
+    "createdAt": ISODate("2024-01-16T09:15:00Z")
+}
+
+
+┌──────────────────────────────────────────────────────────────────────────────
+│ COLECCIÓN: carta
+├──────────────────────────────────────────────────────────────────────────────
+
+Campo              │ Tipo      │ Descripción
+─────────────────────────────────────────────────────────────────────────────
+_id                │ ObjectId  │ Identificador único (clave primaria)
+hijoId             │ ObjectId  │ Referencia al hijo (clave foránea)
+titulo             │ string    │ Título de la carta
+contenido          │ text      │ Contenido/cuerpo de la carta
+styleTemplate      │ string    │ Nombre de la plantilla de diseño
+recipientEmail     │ string    │ Email del destinatario
+images             │ json      │ Array de URLs de imágenes incluidas
+sentAt             │ date      │ Fecha de envío (null si no enviada)
+createdAt          │ date      │ Fecha de creación
+
+Ejemplo JSON:
+{
+    "_id": ObjectId("507f1f77bcf86cd799439013"),
+    "hijoId": ObjectId("507f1f77bcf86cd799439012"),
+    "titulo": "Carta para la abuela",
+    "contenido": "Querida abuela, te extraño mucho...",
+    "styleTemplate": "colorful_hearts",
+    "recipientEmail": "abuela@ejemplo.com",
+    "images": [
+        "https://cdn.example.com/cartas/img1.jpg",
+        "https://cdn.example.com/cartas/img2.jpg"
+    ],
+    "sentAt": ISODate("2024-01-18T15:45:00Z"),
+    "createdAt": ISODate("2024-01-17T11:20:00Z")
+}
+
+
+5. CONSIDERACIONES TÉCNICAS
+───────────────────────────────────────────────────────────────────────────────
+
+Indexación recomendada:
+    • _id en todas las colecciones (automático en MongoDB)
+    • email en padres (índice UNIQUE para garantizar unicidad)
+    • padreId en hijos (para búsquedas rápidas de hijos de un padre)
+    • hijoId en carta (para búsquedas rápidas de cartas de un hijo)
+
+Validación de datos:
+    • Email: debe ser único y válido
+    • Contraseña: mínimo 8 caracteres, hasheada con bcrypt
+    • Edad: número entre 0 y 120
+    • URLs de imágenes: validar formato URL válido
+
+Seguridad:
+    • Contraseñas almacenadas hasheadas (nunca en texto plano)
+    • Validación en cliente y servidor
+    • Control de acceso: un padre solo ve sus propios hijos y cartas
+    • Copias de seguridad automáticas en MongoDB Atlas
+
+Límites sugeridos:
+    • Máximo 15 hijos por padre
+    • Máximo 20 cartas por hijo
+    • Máximo 10 imágenes por carta
+    • Tamaño máximo de contenido: 10,000 caracteres
+
+
+6. INTERACCIONES PRINCIPALES DEL SISTEMA
+───────────────────────────────────────────────────────────────────────────────
+
+Registro:
+    1. Padre se registra con email y contraseña
+    2. Se crea documento en colección "padres"
+
+Agregar hijo:
+    1. Padre inicia sesión
+    2. Crea nuevo perfil de hijo
+    3. Se inserta documento en "hijos" con referencia al padre
+
+Crear carta:
+    1. Hijo inicia sesión
+    2. Selecciona plantilla de diseño
+    3. Sube/selecciona imágenes
+    4. Redacta contenido
+    5. Se inserta documento en "carta" con referencias
+
+Enviar carta:
+    1. Se actualiza el campo "sentAt" en el documento de carta
+    2. Sistema envía email al destinatario con la carta generada

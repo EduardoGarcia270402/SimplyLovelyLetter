@@ -31,3 +31,9 @@ SimplyLovelyLetter facilita que niños creen cartas digitales mediante comandos 
 - HTML, CSS, JavaScript (sin frameworks)
 - Web Speech API (`SpeechRecognition`)
 
+## Base de Datos
+- Utilizaremos MongoDB(Atlas), que es:
+    * Una base de datos NoSQL
+    * Esta oriendata a documentos
+    * Su modelo es basado en JSON
+    * Es no relacional (aunque puede manejar referencias)
