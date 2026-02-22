@@ -1,0 +1,60 @@
+SPRINT 1 — Infraestructura Base del Backend
+
+1. Objetivo General
+Establecer la infraestructura fundamental del backend, asegurando:
+
+* Configuración modular
+* Separación de responsabilidades
+*Conexión segura a la base de datos
+* Arranque controlado del servidor
+* Preparación para escalabilidad y testing
+
+Este sprint construye la base estructural sobre la cual se desarrollarán los siguientes módulos del sistema.
+
+2. Estructura Trabajada
+src/
+ ├── config/
+ │     ├── db.js
+ │     └── env.js
+ ├── app.js
+ └── server.js
+
+2.1 Carpeta: config/
+
+2.1.1 db.js
+Configuramos la conexion con MongoDB utilizando Mongoose.
+Responsabilidades:
+
+* Conectarse a la base de datos usando la URI definida en variables de entorno (MONGO_URI)
+* Manejar errores de conexión con mensajes descriptivos
+* Detener el proceso si la conexión falla (fail-fast strategy)
+* Registrar confirmación de conexión exitosa
+
+2.1.2 env.js
+Cargamos las variables de entorno
+Responsabilidades:
+
+* Cargar variables usando dotenv desde archivo .env
+* Exportar configuración necesaria (PORT, DB_URI)
+* Proporcionar valores por defecto (PORT: 3000)
+
+3. DEPENDENCIAS DEL SPRINT 1
+
+El proyecto incluye las siguientes dependencias principales implementadas:
+
+3.1 Core Framework
+- express: ^5.2.1 - Framework web
+- cors: ^2.8.6 - Gestión de CORS
+- morgan: ^1.10.1 - Logging HTTP
+- dotenv: ^17.3.1 - Gestión de variables de entorno
+
+3.2 Base de Datos
+- mongoose: ^9.2.1 - ODM para MongoDB
+
+3.3 Seguridad y Autenticación (preparadas para Sprint 5)
+- jsonwebtoken: ^9.0.3 - JWT para autenticación
+- bcryptjs: ^3.0.3 - Hash de contraseñas
+- nodemailer: ^8.0.1 - Envío de emails
+
+3.4 Desarrollo
+- nodemon: ^3.1.14 - Reinicio automático en desarrollo

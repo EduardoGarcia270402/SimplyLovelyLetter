@@ -1,3 +1,5 @@
+//en este archivo se configura la conexión a la base de datos MongoDB utilizando Mongoose. 
+//Se exporta una función que se puede llamar para establecer la conexion a la base de datos.
 const mongoose = require('mongoose');
 
 const connectDB = async () => {

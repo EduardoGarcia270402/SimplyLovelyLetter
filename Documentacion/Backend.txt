@@ -1,0 +1,11 @@
+PROCESO PARA REALIZAR EL BACKEND
+
+1. Plan General de Sprints 
+| Sprint   | Carpeta Principal           | Objetivo Arquitectónico               |
+| -------- | --------------------------- | ------------------------------------- |
+| Sprint 1 | config + server.js + app.js | Infraestructura base                  |
+| Sprint 2 | models                      | Capa de dominio y persistencia        |
+| Sprint 3 | repositories                | Abstracción de acceso a datos         |
+| Sprint 4 | controllers + routes        | Capa de aplicación (API REST)         |
+| Sprint 5 | middlewares + utils         | Transversalidad, seguridad y robustez |
+
