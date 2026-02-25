@@ -1,75 +1,79 @@
-======================================== OBJETIVO DEL SPRINT
-========================================
+1. OBJETIVO DEL SPRINT
 
 Diseñar e implementar la capa de modelos (models/) del backend
 utilizando Mongoose, definiendo las entidades principales del dominio
 del sistema.
 
-Este sprint se enfocó exclusivamente en la estructura de datos,
+Este sprint se enfoca exclusivamente en la estructura de datos,
 relaciones, validaciones y configuración de persistencia en MongoDB.
 
-No se implementó lógica de negocio ni controladores en esta fase.
+No se implemento lógica de negocio ni controladores en esta fase.
 
-======================================== ARQUITECTURA IMPLEMENTADA
-========================================
-
+2. Arquitectura
 Se crearon tres modelos principales:
-
-1.  User
-2.  Template
-3.  Letter
-
-Además, se creó un archivo index.js para centralizar las exportaciones
+* User
+* Template
+* Letter
+Tambien se creo un archivo index.js para centralizar las exportaciones
 de los modelos.
 
-======================================== MODELO 1: USER
-========================================
+2.1 MODELO 1: USER
 
 Representa al padre, tutor o administrador que utiliza la plataforma.
 
-Campos principales: - name - email (único e indexado) - password (con
-hash automático) - role (parent | admin) - timestamps (createdAt,
-updatedAt)
+Campos principales: 
+- name - email (único e indexado) 
+- password (con hash automático) 
+- role (parent | admin) 
+- timestamps (createdAt,updatedAt)
 
-Características técnicas: - Validaciones a nivel esquema - Índice único
-en email - Middleware pre(‘save’) para hash de contraseña - Método de
-instancia comparePassword - password con select: false por seguridad
+Características técnicas: 
+- Validaciones a nivel esquema 
+- Índice único en email 
+- Middleware pre(‘save’) para hash de contraseña 
+- Método de instancia comparePassword 
+- password con select: false por seguridad
 
-Justificación: El sistema requiere autenticación y control de acceso.
+¿Porque se hizo asi?: El sistema requiere autenticación y control de acceso.
 Este modelo permite escalar hacia un panel administrativo en el futuro.
 
-======================================== MODELO 2: TEMPLATE
-========================================
-
+2.2 MODELO 2: TEMPLATE
 Representa las plantillas visuales que los niños pueden seleccionar para
 personalizar sus cartas digitales.
 
-Campos principales: - name - previewImage (URL) - backgroundColor -
-isActive - timestamps
+Campos principales: 
+- name 
+- previewImage (URL) 
+- backgroundColor 
+- isActive 
+- timestamps
 
-Justificación: Separar las plantillas como entidad independiente
+¿Porque se hizo eso?: para separar las plantillas como entidad independiente
 permite: - Activar o desactivar plantillas sin eliminarlas - Escalar a
 un catálogo administrable - Mantener normalización en la base de datos
 
-======================================== MODELO 3: LETTER
-========================================
-
+2.3 MODELO 3: LETTER
 Entidad central del sistema. Representa la carta digital creada.
 
-Campos principales: - childName - content (texto transcrito desde voz) -
-audioUrl (opcional) - template (referencia a Template) -
-recipientEmail - status (draft | sent | failed) - user (referencia a
-User) - timestamps
+Campos principales: 
+- childName 
+- content (texto transcrito desde voz) 
+- audioUrl (opcional) 
+- template (referencia a Template) 
+-recipientEmail 
+- status (draft | sent | failed) 
+- user (referencia a User) 
+- timestamps
 
-Relaciones: - Un User puede tener múltiples Letters (1:N) - Un Template
-puede ser usado en múltiples Letters (1:N)
+Relaciones: 
+- Un User puede tener múltiples Letters (1:N) 
+- Un Template puede ser usado en múltiples Letters (1:N)
 
-Justificación: Este modelo concentra la lógica principal del dominio.
+¿Porque sehizo asi?: Este modelo concentra la lógica principal del dominio.
 Permite controlar el flujo de envío, almacenar historial y mantener
 relaciones consistentes entre usuarios y plantillas.
 
-======================================== DISEÑO Y DECISIONES
-ARQUITECTÓNICAS ========================================
+3.DISEÑO Y DECISIONES ARQUITECTÓNICAS
 
 -   Arquitectura modular con un archivo por modelo.
 -   Validaciones estructurales en la capa de persistencia.
@@ -81,10 +85,3 @@ ARQUITECTÓNICAS ========================================
 
 Este sprint deja el backend listo para construir la capa de acceso a
 datos (repositories) en el Sprint 3.
-
-======================================== RESULTADO DEL SPRINT 2
-========================================
-
-✓ Modelos normalizados ✓ Relaciones definidas ✓ Seguridad en
-credenciales ✓ Base sólida para autenticación ✓ Escalable y mantenible ✓
-Preparado para crecimiento funcional
